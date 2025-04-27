@@ -23,11 +23,24 @@
                             <rect key="frame" x="0.0" y="0.0" width="372" height="60"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ZX-b2-vBA">
-                                    <rect key="frame" x="16" y="0.0" width="297" height="60"/>
+                                    <rect key="frame" x="16" y="0.0" width="251" height="60"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r52-j0-Nv5" userLabel="deleteButton">
+                                    <rect key="frame" x="283" y="0.0" width="30" height="60"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="tintColor" name="AccentColor"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="삭제">
+                                        <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <state key="selected" image="xmark.bin.fill" catalog="system"/>
+                                    <connections>
+                                        <action selector="onClickedActions:" destination="U6b-Vx-4bR" eventType="touchUpInside" id="7wA-H9-l68"/>
+                                    </connections>
+                                </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aY0-gh-rKA">
                                     <rect key="frame" x="329" y="0.0" width="27" height="60"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -60,6 +73,7 @@
                 <constraint firstItem="Os1-Cz-zSP" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="zVs-Pn-hLG"/>
             </constraints>
             <connections>
+                <outlet property="deleteButton" destination="r52-j0-Nv5" id="Mgp-5Q-IxQ"/>
                 <outlet property="listTypeButton" destination="aY0-gh-rKA" id="ki9-6a-PWo"/>
                 <outlet property="totalCountLabel" destination="4ZX-b2-vBA" id="O9M-Se-LsP"/>
             </connections>
@@ -68,8 +82,9 @@
     </objects>
     <resources>
         <image name="list.bullet" catalog="system" width="128" height="87"/>
+        <image name="xmark.bin.fill" catalog="system" width="128" height="92"/>
         <namedColor name="AccentColor">
-            <color red="0.0" green="0.80000000000000004" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.0" green="0.80000001192092896" blue="0.40000000596046448" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

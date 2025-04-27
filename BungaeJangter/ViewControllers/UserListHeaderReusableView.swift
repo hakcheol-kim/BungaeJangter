@@ -7,19 +7,27 @@
 
 import UIKit
 
+
 class UserListHeaderReusableView: UICollectionReusableView {
-    
+    enum Action {
+        case changeDelete(Bool)
+        case changeListType(UserListViewModel.ListType)
+    }
     @IBOutlet weak var listTypeButton: UIButton!
     @IBOutlet weak var totalCountLabel: UILabel!
+    @IBOutlet weak var deleteButton: UIButton!
     var listType: UserListViewModel.ListType = .list
+    var isEditing: Bool = false
     static let reuseIdentifier = "UserListHeaderReusableView"
     
-    var onClickedActions:((_ listType: UserListViewModel.ListType) -> Void)?
+    var onClickedActions:((_ action: UserListHeaderReusableView.Action) -> Void)?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-    func setData(totalCount: Int, listType: UserListViewModel.ListType) {
+    func setData(totalCount: Int, listType: UserListViewModel.ListType, isEditing: Bool) {
         self.listType = listType
+        self.isEditing = isEditing
         totalCountLabel.text = "Total: \(totalCount)"
     }
     
@@ -33,7 +41,17 @@ class UserListHeaderReusableView: UICollectionReusableView {
                 self.listType = .list
                 listTypeButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
             }
-            self.onClickedActions?(listType)
+            self.onClickedActions?(.changeListType(listType))
+        }
+        else if sender == deleteButton {
+            self.isEditing.toggle()
+            if isEditing {
+                deleteButton.setTitle("완료", for: .normal)
+            }
+            else {
+                deleteButton.setTitle("삭제", for: .normal)
+            }
+            self.onClickedActions?(.changeDelete(isEditing))
         }
     }
 }

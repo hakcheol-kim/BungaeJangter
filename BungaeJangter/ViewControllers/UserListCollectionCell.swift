@@ -8,18 +8,36 @@
 import UIKit
 import Kingfisher
 class UserListCollectionCell: UICollectionViewCell {
+    enum Action {
+        case check(Bool)
+    }
+    
     @IBOutlet weak var containerView: UIStackView!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descptionLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
+    @IBOutlet weak var checkBoxButtton: UIButton!
+    
+    var isEditing: Bool = false
+    var isChecked: Bool = false
+    var onClickActions:((_ action: UserListCollectionCell.Action) ->Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
-    func setData(_ userInfo: UserInfo, listType: UserListViewModel.ListType) {
+    func setData(_ userInfo: UserInfo, listType: UserListViewModel.ListType, isEditing: Bool, isChecked: Bool) {
+        self.isEditing = isEditing
+        self.isChecked = isChecked
+        checkBoxButtton.isHidden = true
+        
+        if isEditing {
+            checkBoxButtton.isHidden = false
+            checkBoxButtton.isSelected = isChecked
+        }
+        
         if listType == .list {
             containerView.layoutMargins = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
             containerView.axis = .horizontal
@@ -47,4 +65,13 @@ class UserListCollectionCell: UICollectionViewCell {
             addressLabel.text = address.address
         }
     }
+    @IBAction func onClickedButtonActions(_ sender: UIButton) {
+        if sender == checkBoxButtton {
+            self.isChecked.toggle()
+            sender.isSelected = isChecked
+            self.onClickActions?(.check(isChecked))
+        }
+    }
+    
+    
 }

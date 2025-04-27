@@ -19,6 +19,9 @@ class UserListViewModel {
     var total: Int = 0
     var limit: Int = 30
     var isDataLoading: Bool = false
+    var isEditing: Bool = false
+    var deleteItemIds: [UserInfo] = []
+    
     init(type: UserType) {
         self.type = type
     }
@@ -34,6 +37,9 @@ class UserListViewModel {
         case dataRest
         case addList
         case requestUserList
+        
+        case checkedItem(Bool, UserInfo)
+        case changeDeleteMode(Bool)
     }
     
     func send(_ action: Action) {
@@ -81,6 +87,33 @@ class UserListViewModel {
                     }
                 }
             }
+            return
+        case .checkedItem(let isCheck, let user):
+            if isCheck {
+                deleteItemIds.append(user)
+            } else {
+                if let index = deleteItemIds.firstIndex(where: { $0 == user }) {
+                    deleteItemIds.remove(at: index)
+                }
+            }
+        case .changeDeleteMode(let value):
+            self.isEditing = value
+            if value {
+                self.deleteItemIds.removeAll()
+            }
+            else {
+                if deleteItemIds.count > 0 {
+                    var newList: [UserInfo] = []
+                    for user in self.userList {
+                        if deleteItemIds.contains(where: { $0 == user }) {
+                            continue
+                        }
+                        newList.append(user)
+                    }
+                    self.userList = newList
+                }
+            }
+            collectionView?.reloadData()
             return
         }
     }
@@ -154,10 +187,15 @@ extension UserListViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: UserListHeaderReusableView.reuseIdentifier, for: indexPath) as! UserListHeaderReusableView
-            header.setData(totalCount: viewModel.total, listType: viewModel.listType)
-            header.onClickedActions = { [weak self] listType in
-                self?.viewModel.listType = listType
-                self?.setUpLayout()
+            header.setData(totalCount: viewModel.total, listType: viewModel.listType, isEditing: viewModel.isEditing)
+            header.onClickedActions = { [weak self] action in
+                switch action {
+                case .changeListType(let type):
+                    self?.viewModel.listType = type
+                    self?.setUpLayout()
+                case .changeDelete(let toggle):
+                    self?.viewModel.send(.changeDeleteMode(toggle))
+                }
             }
             return header
         }
@@ -174,7 +212,14 @@ extension UserListViewController: UICollectionViewDelegate, UICollectionViewData
         }
         if indexPath.row < viewModel.userList.count {
             let data = viewModel.userList[indexPath.row]
-            cell.setData(data, listType: viewModel.listType)
+            let isChecked = viewModel.deleteItemIds.contains(where: { $0 == data })
+            cell.setData(data, listType: viewModel.listType, isEditing: viewModel.isEditing, isChecked: isChecked)
+            cell.onClickActions = { [weak self] action in
+                switch action {
+                case .check(let check):
+                    self?.viewModel.send(.checkedItem(check, data))
+                }
+            }
         }
         return cell
     }
